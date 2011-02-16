@@ -9,46 +9,52 @@ import u3
 #set output channel on Labjack
 LED = 6004
 
-#initialize state as 0 so initial flip is to 1 ie on
+# LED state: null = false = led off
 State = ()
 
-#set initial Target for first iteration and round up to a whole second
+#set initial Target time for first iteration and round up to a whole second
 Target = math.ceil(time.time())   
  
 while 1 != 0:
  
-	# set timing parameters for later.  These are here to catch changes to config file dynamically, without a restart.
-	# these should be set from commandline arguments or a config file, with defaults set here?
-	Period = 1
-	Divisor = .5
+	#
+	#set Periods in seconds and derive implications
+	#
+	MajorPeriod = 1
+	MinorPeriod = .5
  
-	NapTime = float(Period)/float(Divisor)
+	NapTime = float(MajorPeriod)/float(MinorPeriod)
  
 	# round Target up to nearest even time
-	Odd = Target % Period
-	if Odd != 0:
-		Target = Target + ( Period - Odd )
+	Overplus = Target % MajorPeriod
+	if Overplus != 0:
+		Target = Target + ( MajorPeriod - Overplus )
  
+
 	#
 	# compare current time to Target and act accordingly.
 	#
 	Start = time.time()
  
 	if Start >= Target:
-                Target = Target + Period
+
+		#MajorPeriod
+
+                Target = Target + MajorPeriod
                 print '@ %f seconds from epoch:' % Start
 
-		#initialize labjack
-		d = u3.U3()
+		#initialize labjack on each loop
+		device = u3.U3()
 
 		#flip current state
 		State = not State
 		print 'LED is %i ' % State
 
 		#toggle the LED
-		d.writeRegister(LED, State)
+		ddevice.writeRegister(LED, State)
 		
-		d.close
+		#close the labjack on eachloop
+		device.close
  
 	else:
 		Remainder = Target - Start
@@ -57,4 +63,8 @@ while 1 != 0:
 			time.sleep(Remainder)
  
 		else:
+
+			#Minor Period
+			#preforms actions?
+			
 			time.sleep(NapTime)
