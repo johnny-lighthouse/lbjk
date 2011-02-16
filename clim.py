@@ -10,7 +10,7 @@ import u3
 LED = 6004
 
 #initialize state as 0 so initial flip is to 1 ie on
-State = 0
+State = ()
 
 #set initial Target for first iteration and round up to a whole second
 Target = math.ceil(time.time())   
@@ -42,7 +42,7 @@ while 1 != 0:
 		d = u3.U3()
 
 		#flip current state
-		State ^= 1
+		State = not State
 		print 'LED is %i ' % State
 
 		#toggle the LED
