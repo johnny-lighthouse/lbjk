@@ -12,7 +12,7 @@ LED = 6004
 # LED state: null = false = led off
 State = ()
 
-#set initial Target time for first iteration and round up to a whole second
+#set an initial Target time for first iteration and round up to a whole second
 Target = math.ceil(time.time())   
  
 while 1 != 0:
@@ -44,17 +44,17 @@ while 1 != 0:
                 print '@ %f seconds from epoch:' % Start
 
 		#initialize labjack on each loop
-		device = u3.U3()
+		Device = u3.U3()
 
 		#flip current state
 		State = not State
 		print 'LED is %i ' % State
 
 		#toggle the LED
-		ddevice.writeRegister(LED, State)
+		Device.writeRegister(LED, State)
 		
 		#close the labjack on eachloop
-		device.close
+		Device.close
  
 	else:
 		Remainder = Target - Start
