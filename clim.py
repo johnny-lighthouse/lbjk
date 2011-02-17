@@ -5,6 +5,7 @@ import math
 
 #Initilize Labjack
 import u3
+Device = u3.U3(autoOpen = False,debug = True)
 
 #set output channel on Labjack
 LED = 6004
@@ -20,7 +21,7 @@ while 1 != 0:
 	#
 	#set Periods in seconds and derive implications
 	#
-	MajorPeriod = 1
+	MajorPeriod = .5
 	MinorPeriod = .5
  
 	NapTime = float(MajorPeriod)/float(MinorPeriod)
@@ -44,7 +45,7 @@ while 1 != 0:
                 print '@ %f seconds from epoch:' % Start
 
 		#initialize labjack on each loop
-		Device = u3.U3()
+		Device.open()
 
 		#flip current state
 		State = not State
@@ -54,7 +55,7 @@ while 1 != 0:
 		Device.writeRegister(LED, State)
 		
 		#close the labjack on eachloop
-		Device.close
+		Device.close()
  
 	else:
 		Remainder = Target - Start
