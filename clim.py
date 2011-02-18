@@ -5,10 +5,7 @@ import math
 
 #Initilize Labjack
 import u3
-Device = u3.U3(autoOpen = False,debug = True)
-
-#set output channel on Labjack
-LED = 6004
+Device = u3.U3(autoOpen = False)
 
 # LED state: null = false = led off
 State = ()
@@ -18,38 +15,38 @@ Target = math.ceil(time.time())
  
 while 1 != 0:
  
-	#
-	#set Periods in seconds and derive implications
-	#
-	MajorPeriod = .5
-	MinorPeriod = .5
- 
+	#read config file and set default values
+	import ConfigParser
+	config = ConfigParser.RawConfigParser({'MajorPeriod': '1', 'MinorPeriod': '.5'})
+	config.read('config.file')
+
+	#get periods in seconds	from config file
+	MajorPeriod = config.getfloat('section 1', 'MajorPeriod')
+	MinorPeriod = config.getfloat('section 1', 'MinorPeriod')
+
+	#calculate time to sleep 
 	NapTime = float(MajorPeriod)/float(MinorPeriod)
  
 	# round Target up to nearest even time
 	Overplus = Target % MajorPeriod
 	if Overplus != 0:
 		Target = Target + ( MajorPeriod - Overplus )
- 
 
-	#
-	# compare current time to Target and act accordingly.
-	#
-	Start = time.time()
  
+	Start = time.time()
 	if Start >= Target:
 
-		#MajorPeriod
-
                 Target = Target + MajorPeriod
-                print '@ %f seconds from epoch:' % Start
 
 		#initialize labjack on each loop
 		Device.open()
 
+		#set output register on Labjack
+		LED = config.getint('section 1', 'LED address')
+
 		#flip current state
 		State = not State
-		print 'LED is %i ' % State
+		print 'LED is %d ' % State
 
 		#toggle the LED
 		Device.writeRegister(LED, State)
