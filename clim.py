@@ -19,25 +19,42 @@ Device = u3.U3(autoOpen = False)
 State = ()
 
 #set an initial Target time for first iteration and round up to a whole second
-Target = math.ceil(time.time())   
+Target = math.ceil(time.time())
+
+MajorPeriod=()
 
 while 1 != 0:
 
-	#read config file and set default values
+	Start = time.time()
+
+	#
+	#read config file and set default values.  default values don't work as intended.
+	#
 	config = ConfigParser.RawConfigParser({'MajorPeriod': '1', 'MinorPeriod': '.5'})
 	config.read('config.file')
 
 	#get periods in seconds	from config file
-	MajorPeriod = config.getfloat('section 1', 'MajorPeriod')
+	NewMajorPeriod = config.getfloat('section 1', 'MajorPeriod')
 	MinorPeriod = config.getfloat('section 1', 'MinorPeriod')
 
+	#set output register on Labjack
+	LED = config.getint('section 1', 'LED address')
+
 	level_name = config.get('section 1', 'LogLevel')
-	print "%s" % level_name
-	Level = LEVELS.get(level_name, logging.NOTSET)
-	print "%s" % Level
 	LOG_FILENAME = config.get('section 1', 'LogFile')
-	print "%s" % LOG_FILENAME
+
+	#
+	#flesh out configuration of logging setup and sleep time
+	#
+	Level = LEVELS.get(level_name, logging.NOTSET)
 	logging.basicConfig(filename=LOG_FILENAME,level=Level)
+
+	#check for change in major period, log and set
+#	logging.debug("NewMajorPeriod = %s and MajorPeriod = %s" % NewMajorPeriod MajorPeriod )
+	if MajorPeriod != NewMajorPeriod:
+		logging.info("config changed for MajorPeriod!")
+#		logging.info("%s: detected config change: MajorPeriod changed from %s to %s" % Start MajorPeriod NewMajorPeriod )
+		MajorPeriod = NewMajorPeriod
 
 	#calculate time to sleep 
 	NapTime = float(MajorPeriod)/float(MinorPeriod)
@@ -48,18 +65,14 @@ while 1 != 0:
 		Target = Target + ( MajorPeriod - Overplus )
 
 
-	Start = time.time()
 	if Start >= Target:
 
-		logging.debug('This message should go to the log file')
+		logging.debug('This message should go to the log filcheived MajorPeriode')
 
 		Target = Target + MajorPeriod
 
 		#initialize labjack on each loop
 		Device.open()
-
-		#set output register on Labjack
-		LED = config.getint('section 1', 'LED address')
 
 		#flip current state
 		State = not State
