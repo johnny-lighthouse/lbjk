@@ -36,13 +36,20 @@ MinorPeriod = .5
 
 #set an initial Target time for first iteration and round up to a whole second
 Target = math.ceil(time.time())
+Start = ()
+NapTime = ()
+Remainder = ()
 
-#
-# main loop
-#
+def Increment_Target():
+	global Target
+	Target = Target + MajorPeriod
 
-while 1 != 0:
 
+def Set_Timer():
+	global Start
+	global Naptime
+	global Target
+ 
 	Start = time.time()
 
 	#calculate time to sleep 
@@ -53,10 +60,19 @@ while 1 != 0:
 	if Overplus != 0:
 		Target = Target + ( MajorPeriod - Overplus )
 
+
+#
+# main loop
+#
+
+while 1 != 0:
+
+	Set_Timer()
+
 	if Start >= Target:
 
-		Target = Target + MajorPeriod
-
+		Increment_Target()
+	
 		Open_Device()
 
 		Flip_LED()
