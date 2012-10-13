@@ -1,8 +1,7 @@
-#dump acceleromter voltage to stdout
+# periodically poll labjack for current acceleromter voltage and print to stdout
 
-#
+
 # LabjackPython library calls
-#
 
 import u3
 LED = 6004	#address of LED, 6000 register is DIO
@@ -26,10 +25,8 @@ def Flip_LED():
 	print "LED is %s" % LED_State
 	Device.writeRegister(LED, LED_State)   
 
-#
-# other setup
-#
 
+# other setup
 
 import time
 import math
