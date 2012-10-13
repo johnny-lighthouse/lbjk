@@ -1,11 +1,9 @@
 # periodically poll labjack for current acceleromter voltage and print to stdout
 
-
+#############
 # LabjackPython library calls
 
 import u3
-LED = 6004	#address of LED, 6000 register is DIO
-X_Axis = 00	#address of acceleromter, 00 register is AIN
 
 Device = u3.U3(autoOpen = False)
 
@@ -14,18 +12,26 @@ def Open_Device():
 
 def Close_Device():
 	Device.close()
+
 	
+X_Axis = 00		#address of acceleromter, 00 register is AIN
 def Read_X():
 	return Device.readRegister(X_Axis)
 
+
+LED = 6004		#address of LED, 6000 register is DIO
 LED_State = ()
+def Write_LED():
+	Device.writeRegister(LED, LED_State)   
+
+
 def Flip_LED():
 	global LED_State 
 	LED_State = not LED_State
 	print "LED is %s" % LED_State
-	Device.writeRegister(LED, LED_State)   
+	Write_LED()
 
-
+###############
 # other setup
 
 import time
