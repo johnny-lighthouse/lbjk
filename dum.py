@@ -41,9 +41,9 @@ def Increment_Target():
 	global Target
 	Target = Target + MajorPeriod
 
-Start = ()
-NapTime = ()
-Remainder = ()
+Start = 0
+NapTime = 0
+Remainder = 0
 
 def Set_Timer():
 	global Start
@@ -60,7 +60,7 @@ def Set_Timer():
 	if Overplus != 0:
 		Target = Target + ( MajorPeriod - Overplus )
 
-LED_State = ()
+LED_State = 0
 
 def Flip_LED():
 	global LED_State 
@@ -69,7 +69,7 @@ def Flip_LED():
 
 Last_Few = []
 Sample = 5
-Average = ()
+Average = 0 
 def Calc_Average():
 	global Last_Few
 	if len(Last_Few) >= (Sample +1):
