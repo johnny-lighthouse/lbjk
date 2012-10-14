@@ -31,8 +31,8 @@ def Write_LED():
 import time
 import math
 
-MajorPeriod = 1
-MinorPeriod = .5
+MajorPeriod = .01
+MinorPeriod = .005
 
 #set an initial Target time for first iteration and round up to a whole second
 Target = math.ceil(time.time())
@@ -67,6 +67,13 @@ def Flip_LED():
 	LED_State = not LED_State
 	Write_LED()
 
+Last_Few = []
+Sample = 3
+def Calc_Average():
+	global Last_Few
+	if len(Last_Few) >= (Sample +1):
+		del Last_Few[0]
+	#take average of Last_Few
 
 ###############
 # main loop
@@ -82,10 +89,14 @@ while 1 != 0:
 		Open_Device()
 
 		Flip_LED()
-		print "LED is %s" % LED_State
 
 		#Read and print value of accelerometer
 		Accel = Read_X()
+		Last_Few.append(Accel)
+
+		Calc_Average()
+
+		print "%s" % Last_Few
 		print "Acceleromter output is %s Volts" % Accel
 
 		Close_Device()
