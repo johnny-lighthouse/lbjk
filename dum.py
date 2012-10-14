@@ -68,15 +68,24 @@ def Flip_LED():
 	Write_LED()
 
 Last_Few = []
-Sample = 3
+Sample = 5
+Average = ()
 def Calc_Average():
 	global Last_Few
 	if len(Last_Few) >= (Sample +1):
 		del Last_Few[0]
-	#take average of Last_Few
+	Sum = 0 
+	global Average	
+	for x in Last_Few:
+		Sum = Sum + x
+	Average = Sum / Sample
 
 ###############
 # main loop
+
+
+Max_Delta = 0
+Max_Diff = 0
 
 while 1 != 0:
 
@@ -96,8 +105,22 @@ while 1 != 0:
 
 		Calc_Average()
 
-		print "%s" % Last_Few
-		print "Acceleromter output is %s Volts" % Accel
+		Diff = Average - Accel
+		if Diff > Max_Diff:
+			Max_Diff = Diff	
+
+#		print "%s" % Last_Few
+#		print "Acceleromter output is %s Volts" % Accel
+#		print "running average is %1.3f Volts" % Average 
+#		print "Last sample differs from average by %1.3f Volts" % Diff
+		print "Max difference of sample from average is %1.3f Volts" %Max_Diff
+		
+		Delta = Last_Few[0] - Accel
+#		print "Difference from last sample is %1.3f Volts" % Delta
+
+		if Delta > Max_Delta:
+			Max_Delta = Delta
+#		print "Max difference at rest is %1.3f Volts" % Max_Delta
 
 		Close_Device()
 
