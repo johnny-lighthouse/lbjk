@@ -93,12 +93,12 @@ def Major_Payload():
 
 		if Delta > Max_Delta:
 			Max_Delta = Delta
-		print "Max difference at rest is %1.3f Volts" % Max_Delta
+		print "Max difference from average is %1.3f Volts" % Max_Delta
 
 		Close_Device()
 
 def Minor_Payload():
-	Tweedle_Dee = 0 
+	pass
 
 def Loop(x,y):
 	
@@ -125,26 +125,26 @@ def Loop(x,y):
 			Target = Target + MajorPeriod
 
 			#major period
-			#preform actions
-			x
-			print "bang! at: ", time.time()
+			#preform actions passed as string in argument x
+
+			eval(x)	
+
 		else:
 			Remainder = Target - Start
 
 			if Remainder < NapTime:
 				time.sleep(Remainder)
-				print "Target = ", Target
-				print "Start = ", Start
 			else:
 
 				#Minor Period
-				#preforms actions?
-				y
-				print "really?"
+				#preform actions passed as string in argument y
+
+				eval(y)
+
 				time.sleep(NapTime)
 
 
 ###############
 # main loop
 
-Loop(Major_Payload(), Minor_Payload())
+Loop("Major_Payload()", "Minor_Payload()")
