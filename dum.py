@@ -86,8 +86,10 @@ def Calc_Average():
 Max_Delta = 0
 Max_Diff = 0
 
-def Major_Payload:
+def Major_Payload():
 
+		global Max_Delta
+		global Max_Diff
 		Increment_Target()
 	
 		Open_Device()
@@ -120,8 +122,8 @@ def Major_Payload:
 		Close_Device()
 
 
-def Minor_Payload:
-
+def Minor_Payload():
+	Tweedle_Dee = 0 
 
 def Loop(x,y):
 
@@ -153,4 +155,4 @@ def Loop(x,y):
 ###############
 # main loop
 
-Loop(Major_Payload, Minor_Payload)
+Loop(Major_Payload(), Minor_Payload())
