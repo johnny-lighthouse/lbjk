@@ -1,7 +1,7 @@
-#############
+###############
 # periodically poll labjack for current acceleromter voltage and print to stdout
 
-#############
+###############
 # LabjackPython library calls
 
 import u3
@@ -26,16 +26,7 @@ def Write_LED():
 
 
 ###############
-# other setup
-
-import time
-import math
-
-MajorPeriod = 1 
-MinorPeriod = .5
-
-
-
+# payload setup
 
 LED_State = 0
 
@@ -56,9 +47,6 @@ def Calc_Average():
 	for x in Last_Few:
 		Sum = Sum + x
 	Average = Sum / Sample
-
-###############
-# first attempt to turn timer into function
 
 Max_Delta = 0
 Max_Diff = 0
@@ -100,15 +88,23 @@ def Major_Payload():
 def Minor_Payload():
 	pass
 
-def Loop(x,y):
+###############
+# Timer Function
+
+
+def Loop(x,y,a,b):
+
+	import time
+	import math
 	
+	MajorPeriod = a
+	MinorPeriod = b
+
 	#set an initial Target time for first iteration and round up to a whole second
 	Target = math.ceil(time.time())
 
 	while True:
-#		print "start time is: ", Start
 
-		global Target
 		Start = time.time()
 
 		#calculate time to sleep 
@@ -147,4 +143,4 @@ def Loop(x,y):
 ###############
 # main loop
 
-Loop("Major_Payload()", "Minor_Payload()")
+Loop("Major_Payload()", "Minor_Payload()",1,.5)
