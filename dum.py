@@ -34,12 +34,7 @@ import math
 MajorPeriod = 1 
 MinorPeriod = .5
 
-#set an initial Target time for first iteration and round up to a whole second
-Target = math.ceil(time.time())
 
-def Increment_Target():
-	global Target
-	Target = Target + MajorPeriod
 
 
 LED_State = 0
@@ -102,16 +97,18 @@ def Major_Payload():
 
 		Close_Device()
 
-#		print "Time is: ", Start 
-
 def Minor_Payload():
 	Tweedle_Dee = 0 
 
 def Loop(x,y):
+	
+	#set an initial Target time for first iteration and round up to a whole second
+	Target = math.ceil(time.time())
 
 	while True:
 #		print "start time is: ", Start
 
+		global Target
 		Start = time.time()
 
 		#calculate time to sleep 
@@ -125,24 +122,25 @@ def Loop(x,y):
 
 		if Start >= Target:
 
-			Increment_Target()
+			Target = Target + MajorPeriod
 
 			#major period
 			#preform actions
 			x
-
+			print "bang! at: ", time.time()
 		else:
 			Remainder = Target - Start
 
 			if Remainder < NapTime:
 				time.sleep(Remainder)
-
+				print "Target = ", Target
+				print "Start = ", Start
 			else:
 
 				#Minor Period
 				#preforms actions?
 				y
-
+				print "really?"
 				time.sleep(NapTime)
 
 
