@@ -81,17 +81,12 @@ def Calc_Average():
 	Average = Sum / Sample
 
 ###############
-# main loop
-
+# first attempt to turn timer into function
 
 Max_Delta = 0
 Max_Diff = 0
 
-while 1 != 0:
-
-	Set_Timer()
-
-	if Start >= Target:
+def Major_Payload:
 
 		Increment_Target()
 	
@@ -124,15 +119,38 @@ while 1 != 0:
 
 		Close_Device()
 
-	else:
-		Remainder = Target - Start
 
-		if Remainder < NapTime:
-			time.sleep(Remainder)
+def Minor_Payload:
+
+
+def Loop(x,y):
+
+	while true:
+
+		Set_Timer()
+
+		if Start >= Target:
+
+			#major period
+			#preform actions
+			x
 
 		else:
+			Remainder = Target - Start
 
-			#Minor Period
-			#preforms actions?
+			if Remainder < NapTime:
+				time.sleep(Remainder)
 
-			time.sleep(NapTime)
+			else:
+
+				#Minor Period
+				#preforms actions?
+				y
+
+				time.sleep(NapTime)
+
+
+###############
+# main loop
+
+Loop(Major_Payload, Minor_Payload)
