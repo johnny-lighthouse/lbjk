@@ -31,8 +31,8 @@ def Write_LED():
 import time
 import math
 
-MajorPeriod = .01
-MinorPeriod = .005
+MajorPeriod = 1 
+MinorPeriod = .5
 
 #set an initial Target time for first iteration and round up to a whole second
 Target = math.ceil(time.time())
@@ -41,24 +41,6 @@ def Increment_Target():
 	global Target
 	Target = Target + MajorPeriod
 
-Start = 0
-NapTime = 0
-Remainder = 0
-
-def Set_Timer():
-	global Start
-	global Naptime
-	global Target
- 
-	Start = time.time()
-
-	#calculate time to sleep 
-	NapTime = MajorPeriod/MinorPeriod
-
-	# round Target up to nearest even time
-	Overplus = Target % MajorPeriod
-	if Overplus != 0:
-		Target = Target + ( MajorPeriod - Overplus )
 
 LED_State = 0
 
@@ -90,7 +72,6 @@ def Major_Payload():
 
 		global Max_Delta
 		global Max_Diff
-		Increment_Target()
 	
 		Open_Device()
 
@@ -117,21 +98,34 @@ def Major_Payload():
 
 		if Delta > Max_Delta:
 			Max_Delta = Delta
-#		print "Max difference at rest is %1.3f Volts" % Max_Delta
+		print "Max difference at rest is %1.3f Volts" % Max_Delta
 
 		Close_Device()
 
+#		print "Time is: ", Start 
 
 def Minor_Payload():
 	Tweedle_Dee = 0 
 
 def Loop(x,y):
 
-	while true:
+	while True:
+#		print "start time is: ", Start
 
-		Set_Timer()
+		Start = time.time()
+
+		#calculate time to sleep 
+		NapTime = MajorPeriod/MinorPeriod
+
+		# round Target up to nearest even time
+		Overplus = Target % MajorPeriod
+		if Overplus != 0:
+			Target = Target + ( MajorPeriod - Overplus )
+
 
 		if Start >= Target:
+
+			Increment_Target()
 
 			#major period
 			#preform actions
