@@ -14,10 +14,10 @@ def Open_Device():
 def Close_Device():
 	Device.close()
 
-X_Axis = 00	#address of acceleromter, 00 register is AIN
+X_Address = 00	#address of acceleromter, 00 register is AIN
 
-def Read_X():
-	return Device.readRegister(X_Axis)
+def Read(z):
+	return Device.readRegister(z_Address)
 
 LED = 6004	#address of LED, 6000 register is DIO
 
@@ -34,6 +34,16 @@ def Flip_LED():
 	global LED_State 
 	LED_State = not LED_State
 	Write_LED()
+
+def Get_Reading(x,n):
+    Command = "Read_" + x + "()"
+    Repeat = n
+    Read_sum = 0
+    Loop_count = 0
+    while Loop_count <= Repeat:
+      Read_sum += eval(Command)
+      Loop_count += 1
+    return Read_sum / Repeat 
 
 Last_Few = []
 Sample = 5
@@ -61,7 +71,7 @@ def Major_Payload():
 		Flip_LED()
 
 		#Read and print value of accelerometer
-		Accel = Read_X()
+		Accel = Get_Reading(x,5)
 		Last_Few.append(Accel)
 
 		Calc_Average()
