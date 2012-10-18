@@ -35,6 +35,14 @@ def Flip_LED():
 	LED_State = not LED_State
 	Write_LED()
 
+def Get_Reading():
+     Read_sum = 0
+     Loop_count = 0
+     while Loop_count < 5:
+       Read_sum += Read_X() 
+       Loop_count += 1
+     return Read_sum / Repeat
+
 Last_Few = []
 Sample = 5
 Average = 0 
@@ -61,7 +69,7 @@ def Major_Payload():
 		Flip_LED()
 
 		#Read and print value of accelerometer
-		Accel = Read_X()
+		Accel = Get_Reading() 
 		Last_Few.append(Accel)
 
 		Calc_Average()
