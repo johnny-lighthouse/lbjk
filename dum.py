@@ -36,9 +36,10 @@ def Flip_LED():
 	Write_LED()
 
 def Get_Reading():
+     Repeat = 5
      Read_sum = 0
      Loop_count = 0
-     while Loop_count < 5:
+     while Loop_count < Repeat:
        Read_sum += Read_X() 
        Loop_count += 1
      return Read_sum / Repeat
