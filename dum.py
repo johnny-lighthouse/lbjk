@@ -14,10 +14,10 @@ def Open_Device():
 def Close_Device():
 	Device.close()
 
-X_Axis = 00	#address of acceleromter, 00 register is AIN
+X_Address = 00	#address of acceleromter, 00 register is AIN
 
-def Read_X():
-	return Device.readRegister(X_Axis)
+def Read(z):
+	return Device.readRegister(z_Address)
 
 LED = 6004	#address of LED, 6000 register is DIO
 
