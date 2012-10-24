@@ -38,8 +38,8 @@ def Loop(x,y,a,b):
 
 			#major period
 			#preform actions passed as string in argument x
-
-			eval(x)	
+			print x
+			exec(x)	
 
 		else:
 			Remainder = Target - Start

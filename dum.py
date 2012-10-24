@@ -88,6 +88,10 @@ def Major_Payload():
 def Minor_Payload():
 	pass
 
+temp = 'Major_Payload()'
+
 import mmTimer
 
-mmTimer.Loop("Major_Payload()", "Minor_Payload()",1,.5)
+mmTimer.Major_Payload = Major_Payload
+
+mmTimer.Loop(temp, "Minor_Payload()",1,.5)
