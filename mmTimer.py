@@ -1,12 +1,17 @@
 ###############
-# preform specified actions at a specidied Major and Minor period
+# preform two arbitrary functions at a specidied Major and Minor period
 #
 # Call thusly:
 #
-# import mmTimer.py
-# mmTimer.Loop("Major_Payload()", "Minor_Payload()",MajorPeriod,MinorPeriod)
+# import mmTimer
+# mmTimer.function1 = function1
+# mmTimer.function2 = function2
+# mmTimer.Loop("function1()", "function2()",MajorPeriod,MinorPeriod)
 #
+# NB that function names are quoted in order to pass them as strings
+# NB both function must be copied into the mmTimer namespace prior to use
 #
+
 
 def Loop(x,y,a,b):
 
@@ -38,7 +43,7 @@ def Loop(x,y,a,b):
 
 			#major period
 			#preform actions passed as string in argument x
-			print x
+
 			exec(x)	
 
 		else:
@@ -51,8 +56,6 @@ def Loop(x,y,a,b):
 				#Minor Period
 				#preform actions passed as string in argument y
 
-				eval(y)
+				exec(y)
 
 				time.sleep(NapTime)
-
-
