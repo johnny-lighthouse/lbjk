@@ -1,6 +1,6 @@
 [section 1]
-MajorPeriod=.125
-MinorPeriod=1
+MajorPeriod=5
+MinorPeriod=7
 LED address=6004
 LogFile=incline.log
 LogLevel=debug
