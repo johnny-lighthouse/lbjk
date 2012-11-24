@@ -7,7 +7,18 @@
 
 import u3
 
-Device = u3.U3(autoOpen = False)
+Device = False
+ 
+def SetDevice():
+	global Device
+	try:
+		Device = u3.U3()#(autoOpen = False)
+	except NullHandleException():
+		print "no Labjack detected, exiting.... "
+		from sys import exit
+		exit()
+
+SetDevice()
 
 def Open_Device():
 	Device.open()
