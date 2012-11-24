@@ -23,9 +23,11 @@ def Loop(x,y,a,b):
 
 	#set an initial Target time for first iteration and round up to a whole second
 	Target = math.ceil(time.time())
+	
+	Run = True 
 
-	while True:
-
+	while Run == True:
+	   try: 
 		Start = time.time()
 
 		#calculate time to sleep 
@@ -59,3 +61,10 @@ def Loop(x,y,a,b):
 				exec(y)
 
 				time.sleep(NapTime)
+
+	   except KeyboardInterrupt:
+		input = raw_input('  ===> ')
+		if input == 'q':
+			Run = False
+		else:
+			pass  
