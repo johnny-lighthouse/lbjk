@@ -65,6 +65,7 @@ def Loop(x,y,a,b):
 	   except KeyboardInterrupt:
 		input = raw_input('  ===> ')
 		if input == 'q':
+			'''stop loop'''
 			Run = False
 		else:
 			pass  
