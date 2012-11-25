@@ -24,9 +24,7 @@ def Loop(x,y,a,b):
 	#set an initial Target time for first iteration and round up to a whole second
 	Target = math.ceil(time.time())
 	
-	Run = True 
-
-	while Run == True:
+	while True:
 	   try: 
 		Start = time.time()
 
@@ -65,7 +63,8 @@ def Loop(x,y,a,b):
 	   except KeyboardInterrupt:
 		input = raw_input('  ===> ')
 		if input == 'q':
-			'''stop loop'''
-			Run = False
+			'''stop loop.  sys.exit() will execute a finally block if defined, it doesn't exit right away'''
+			from sys import exit
+			exit()
 		else:
 			pass  
