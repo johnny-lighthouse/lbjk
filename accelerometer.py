@@ -45,6 +45,18 @@ def Get_Reading():
        Loop_count += 1
      return Read_sum / Repeat
 
+def Get_Average():
+        Measurements = []
+        Sample = 5
+        Sum = 0
+        while len(Measurements) < Sample :
+                Measurements.append(Read_X())
+        for x in Measurements:
+                print "%s  " % str(x)
+                Sum = Sum + x
+        return Sum / Sample
+
+
 Last_Few = []
 Sample = 5
 Average = 0 
@@ -102,12 +114,7 @@ def Major_Payload():
 def Minor_Payload():
 	pass
 
-
-###############
-# repeat
-
-import mmTimer
-
-mmTimer.Major_Payload = Major_Payload
-
-mmTimer.Loop("Major_Payload()", "Minor_Payload()",1,.5)
+def Call_Loop():
+	import mmTimer
+	mmTimer.Major_Payload = Major_Payload
+	mmTimer.Loop("Major_Payload()", "Minor_Payload()",1,.5)
