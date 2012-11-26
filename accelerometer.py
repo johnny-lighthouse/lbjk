@@ -7,8 +7,18 @@
 
 import u3
 
-Device = u3.U3(autoOpen = False)
-
+Device = ""
+ 
+def SetDevice():
+	global Device
+	try:
+		Device = u3.U3()
+		Close_Device()
+	except u3.NullHandleException:
+		print "No Labjack device found... "
+		from sys import exit
+		exit()
+		
 def Open_Device():
 	Device.open()
 
@@ -115,6 +125,9 @@ def Minor_Payload():
 	pass
 
 def Call_Loop():
+	SetDevice()
 	import mmTimer
 	mmTimer.Major_Payload = Major_Payload
 	mmTimer.Loop("Major_Payload()", "Minor_Payload()",1,.5)
+
+
