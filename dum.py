@@ -15,7 +15,6 @@ def SetDevice():
 		Device = u3.U3()
 	except u3.NullHandleException:
 		print "No Labjack device found... "
-	finally:
 		from sys import exit
 		exit()
 
