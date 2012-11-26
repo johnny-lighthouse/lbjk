@@ -12,13 +12,11 @@ Device = False
 def SetDevice():
 	global Device
 	try:
-		Device = u3.U3()#(autoOpen = False)
-	except NullHandleException():
-		print "no Labjack detected, exiting.... "
+		Device = u3.U3()
+	except u3.NullHandleException:
+		print "Frooooooooooooommm... "
 		from sys import exit
 		exit()
-
-SetDevice()
 
 def Open_Device():
 	Device.open()
@@ -116,6 +114,10 @@ def Minor_Payload():
 
 ###############
 # repeat
+
+
+SetDevice()
+Close_Device()
 
 import mmTimer
 
