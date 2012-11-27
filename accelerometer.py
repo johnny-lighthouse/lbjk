@@ -55,7 +55,7 @@ def Get_Reading():
        Loop_count += 1
      return Read_sum / Repeat
 
-def Get_Average():
+def Read_Mean():
         Measurements = []
         Sample = 5
         Sum = 0
@@ -65,6 +65,18 @@ def Get_Average():
                 print "%s  " % str(x)
                 Sum = Sum + x
         return Sum / Sample
+
+def Read_Median(Sample):
+        if Sample % 2 != 0 and type(Sample) == int:
+                Median_Index = (Sample / 2)
+                '''list indicies start from 0 so rounding of integer division provides required offset'''
+                Measurements = []
+                while len(Measurements) < Sample :
+                        Measurements.append(Read_X())
+                Measurments.sort()
+                return Measurements[Median_Index]
+        else:
+                print "Please choose an odd integer sample size for simplicity"
 
 
 Last_Few = []
