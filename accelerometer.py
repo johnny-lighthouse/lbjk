@@ -7,7 +7,7 @@
 
 import u3
 
-Device = ""
+Device = "" 
  
 def SetDevice():
 	global Device
@@ -38,6 +38,13 @@ def Write_LED():
 
 ###############
 # support functions and variables
+
+def Poll_Device(function):
+	'''manage open and close of device for a la carte usage outside of Major_Payload below'''
+	'''test if device has been set and if not call SetDevice() ???'''
+	Open_Device()
+	function
+	Close_Device()
 
 LED_State = 0
 
@@ -73,11 +80,19 @@ def Read_Median(Sample):
                 Measurements = []
                 while len(Measurements) < Sample :
                         Measurements.append(Read_X())
-                Measurments.sort()
+                Measurements.sort()
                 return Measurements[Median_Index]
         else:
                 print "Please choose an odd integer sample size for simplicity"
 
+def Read(Sample):
+	'''return a sequence of raw measurments for use in different averaging schemes'''
+        Measurements = []
+        while len(Measurements) < Sample :
+                Measurements.append(Read_X())
+	'''accept an optional parameter to turn on an if to prinjt values?'''
+	'''should we return like this or modify a global variable?'''
+	return Measurements
 
 Last_Few = []
 Sample = 5
