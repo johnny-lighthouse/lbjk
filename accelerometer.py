@@ -18,6 +18,8 @@ def SetDevice():
 		print "No Labjack device found... "
 		from sys import exit
 		exit()
+#can this be done as Device = SetDevice() with set device returning wither a labjack object or a dummy ??
+
 		
 def Open_Device():
 	Device.open()
@@ -41,7 +43,9 @@ def Write_LED():
 
 def Poll_Device(function):
 	'''manage open and close of device for a la carte usage outside of Major_Payload below'''
-	'''test if device has been set and if not call SetDevice() ???'''
+	#test if device has been set and if not call SetDevice() ???
+	#not working
+	#map builtin useful here?
 	Open_Device()
 	function
 	Close_Device()
@@ -90,9 +94,28 @@ def Read(Sample):
         Measurements = []
         while len(Measurements) < Sample :
                 Measurements.append(Read_X())
-	'''accept an optional parameter to turn on an if to prinjt values?'''
-	'''should we return like this or modify a global variable?'''
+	#accept an optional parameter to turn on an if to print values?
+	#should we also somehow append the time? at beinging or end?
 	return Measurements
+
+
+def Compute_Deviation(*Samples):
+	'''look at a set of data and check if it falls inside or outside of deviation'''
+	
+Sample_Count = 0
+Running_Total = 0
+
+def Run_Average(Samples):
+	'''take a single list of new measurments and add to running average of all data captures and save to a global?'''
+	#should assume 0 if no argument and return the average?
+	#should i have one function to enroll new data and another to return the current running average?
+	global Running_Total
+	global Sample_Count
+	print Samples
+	for s in Samples:
+		Sample_Count += 1
+		Running_Total = Running_Total + s
+	return Running_Total / Sample_Count
 
 Last_Few = []
 Sample = 5
