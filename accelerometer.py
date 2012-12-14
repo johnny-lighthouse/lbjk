@@ -57,6 +57,11 @@ def Flip_LED():
 	LED_State = not LED_State
 	Write_LED()
 
+
+###############
+# averaging and analysis functions and associated variables 
+
+
 def Get_Reading():
      Repeat = 5
      Read_sum = 0
@@ -77,45 +82,82 @@ def Read_Mean():
                 Sum = Sum + x
         return Sum / Sample
 
-def Read_Median(Sample):
-        if Sample % 2 != 0 and type(Sample) == int:
-                Median_Index = (Sample / 2)
-                '''list indicies start from 0 so rounding of integer division provides required offset'''
-                Measurements = []
-                while len(Measurements) < Sample :
-                        Measurements.append(Read_X())
-                Measurements.sort()
-                return Measurements[Median_Index]
-        else:
-                print "Please choose an odd integer sample size for simplicity"
 
-def Read(Sample):
-	'''return a sequence of raw measurments for use in different averaging schemes'''
+#################################
+#    revised for list input     #
+#################################
+
+
+def Median(Samples):
+	'''take a list of data points and return the median value as a float'''
+	Samp=Samples[:]
+	Samp.sort()
+	L = len(Samp)
+	M = L/2
+	if L % 2 != 0:
+                return float(Samp[M])
+        else:
+		return float( Samp[M] + Samp[M-1] ) /2
+
+def Read(Sample=5):
+	'''return a list of raw unmanipulated measurments'''
         Measurements = []
         while len(Measurements) < Sample :
                 Measurements.append(Read_X())
 	#accept an optional parameter to turn on an if to print values?
 	#should we also somehow append the time? at beinging or end?
+	#should Read() return the list and enroll data in the globals and write the raw values to a log file??
 	return Measurements
 
 
-def Compute_Deviation(*Samples):
+def Compute_Deviation(Samples):
 	'''look at a set of data and check if it falls inside or outside of deviation'''
 	
 Sample_Count = 0
 Running_Total = 0
 
-def Run_Average(Samples):
-	'''take a single list of new measurments and add to running average of all data captures and save to a global?'''
-	#should assume 0 if no argument and return the average?
-	#should i have one function to enroll new data and another to return the current running average?
+def enroll_data(Samples):
+	'''accept list of data points and enrolls them into our data set'''
+	# USES same variable as Run_Average below so should not be run in combination at this point
+	#why should this not be combine with read ??
 	global Running_Total
 	global Sample_Count
-	print Samples
-	for s in Samples:
+	for measurement in Samples:
 		Sample_Count += 1
-		Running_Total = Running_Total + s
+		Running_Total = Running_Total + measurement
+		#print Running_Total, Sample_Count, measurement
+	#is it useful to return the unmanipulated input so that we can pass data through this function or is thast confusing??
+
+def Cumulative_Running_Average(Samples=[]):
+	'''
+	return current running average
+	optionally takes a list of new data points and adds them into calculation
+	assumes Sample_Count is greater than 0
+	'''
+
+	#nb global variable is not available in __main__ scope when function imported directly 'from'
+	#should i have one function to enroll new data and another to return the current running average?
+	#should Read() return the list and enroll data in the globals and write the raw values to a log file??
+
+	#########################
+	# duplicated above
+	#
+	global Running_Total
+	global Sample_Count
+	#print Samples
+	for measurement in Samples:
+		Sample_Count += 1
+		Running_Total = Running_Total + measurement
+		#print Running_Total, Sample_Count, measurement
+	#########################
+
 	return Running_Total / Sample_Count
+
+
+
+#################################
+
+#older material below
 
 Last_Few = []
 Sample = 5
@@ -135,7 +177,7 @@ Max_Diff = 0
 
 
 ###############
-# Primary functions
+# functions arranged for repetative looping
 
 def Major_Payload():
 
