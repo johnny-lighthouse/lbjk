@@ -57,36 +57,42 @@ def Flip_LED():
 	LED_State = not LED_State
 	Write_LED()
 
+def Read(Sample=5):
+	'''return a list of raw unmanipulated measurments'''
+        Measurements = []
+        while len(Measurements) < Sample :
+                Measurements.append(Read_X())
+	#accept an optional parameter to turn on an if to print values?
+	#should we also somehow append the time? at beinging or end?
+	#should Read() return the list and enroll data in the globals and write the raw values to a log file??
+	return Measurements
 
 ###############
 # averaging and analysis functions and associated variables 
 
+Sample_Count = 0
+Running_Total = 0
 
-def Get_Reading():
-     Repeat = 5
-     Read_sum = 0
-     Loop_count = 0
-     while Loop_count < Repeat:
-       Read_sum += Read_X() 
-       Loop_count += 1
-     return Read_sum / Repeat
+def enroll_data(Samples):
+	'''accept list of raw data points and enrolls them into our data set'''
+	# USES same variable as Run_Average below so should not be run in combination at this point
+	#why should this not be combine with read ??
+	#we should have another global like Last_Few below which has a rolling window of a certain size
+	global Running_Total
+	global Sample_Count
+	for measurement in Samples:
+		Sample_Count += 1
+		Running_Total = Running_Total + measurement
+		#print Running_Total, Sample_Count, measurement
+	#is it useful to return the unmanipulated input so that we can pass data through this function or is thast confusing??
 
-def Read_Mean():
-        Measurements = []
-        Sample = 5
-        Sum = 0
-        while len(Measurements) < Sample :
-                Measurements.append(Read_X())
-        for x in Measurements:
-                print "%s  " % str(x)
-                Sum = Sum + x
-        return Sum / Sample
-
-
-#################################
-#    revised for list input     #
-#################################
-
+Def Mean(Samples):
+	Samp=Samples[:]
+	Sum = 0.0
+	Size = len(Samp)
+	for s in Samp:
+		Sum = Sum + s	
+	return Sum / Size
 
 def Median(Samples):
 	'''take a list of data points and return the median value as a float'''
@@ -99,64 +105,14 @@ def Median(Samples):
         else:
 		return float( Samp[M] + Samp[M-1] ) /2
 
-def Read(Sample=5):
-	'''return a list of raw unmanipulated measurments'''
-        Measurements = []
-        while len(Measurements) < Sample :
-                Measurements.append(Read_X())
-	#accept an optional parameter to turn on an if to print values?
-	#should we also somehow append the time? at beinging or end?
-	#should Read() return the list and enroll data in the globals and write the raw values to a log file??
-	return Measurements
-
+def Cumulative_Running_Average(Samples=[]):
+	'''return current cumulative running average. assumes Sample_Count is greater than 0'''
+	return Running_Total / Sample_Count
 
 def Compute_Deviation(Samples):
 	'''look at a set of data and check if it falls inside or outside of deviation'''
-	
-Sample_Count = 0
-Running_Total = 0
 
-def enroll_data(Samples):
-	'''accept list of data points and enrolls them into our data set'''
-	# USES same variable as Run_Average below so should not be run in combination at this point
-	#why should this not be combine with read ??
-	global Running_Total
-	global Sample_Count
-	for measurement in Samples:
-		Sample_Count += 1
-		Running_Total = Running_Total + measurement
-		#print Running_Total, Sample_Count, measurement
-	#is it useful to return the unmanipulated input so that we can pass data through this function or is thast confusing??
-
-def Cumulative_Running_Average(Samples=[]):
-	'''
-	return current running average
-	optionally takes a list of new data points and adds them into calculation
-	assumes Sample_Count is greater than 0
-	'''
-
-	#nb global variable is not available in __main__ scope when function imported directly 'from'
-	#should i have one function to enroll new data and another to return the current running average?
-	#should Read() return the list and enroll data in the globals and write the raw values to a log file??
-
-	#########################
-	# duplicated above
-	#
-	global Running_Total
-	global Sample_Count
-	#print Samples
-	for measurement in Samples:
-		Sample_Count += 1
-		Running_Total = Running_Total + measurement
-		#print Running_Total, Sample_Count, measurement
-	#########################
-
-	return Running_Total / Sample_Count
-
-
-
-#################################
-
+###############
 #older material below
 
 Last_Few = []
@@ -221,5 +177,3 @@ def Call_Loop():
 	import mmTimer
 	mmTimer.Major_Payload = Major_Payload
 	mmTimer.Loop("Major_Payload()", "Minor_Payload()",1,.5)
-
-
