@@ -72,6 +72,7 @@ def Read(Sample=5):
 
 Sample_Count = 0
 Running_Total = 0
+Last_Few = []                   # change to something like recent_readings ?/
 
 def enroll_data(Samples):
 	'''accept list of raw data points and enrolls them into our data set'''
@@ -80,12 +81,24 @@ def enroll_data(Samples):
 	#we should have another global like Last_Few below which has a rolling window of a certain size
 	global Running_Total
 	global Sample_Count
+	Recent_Values(Samples)
 	for measurement in Samples:
 		Sample_Count += 1
 		Running_Total = Running_Total + measurement
 		#print Running_Total, Sample_Count, measurement
 	#is it useful to return the unmanipulated input so that we can pass data through this function or is thast confusing??
 
+Def Recent_Values(Add, Length=50, Container=Last_Few)
+	'''manage sequence of last n values of a measurement.  append new values and drop oldest.  return updated sequence object'''
+	#does this have to be a list ??  should we test ??
+	global Container
+	for value in Add:
+		#validate data in input?  must be list of floats???
+		Last_Few.append(value)
+	while len(Container) >= Length:
+		del Last_Few[0]
+	return Container
+	
 Def Mean(Samples):
 	Samp=Samples[:]
 	Sum = 0.0
@@ -112,41 +125,19 @@ def Cumulative_Running_Average(Samples=[]):
 def Compute_Deviation(Samples):
 	'''look at a set of data and check if it falls inside or outside of deviation'''
 
-###############
-#older material below
+def Rolling_mean()
+	'''return mean average of recent readings as defined elsewhere''' 
+	return Mean(Last_Few)
 
-Last_Few = []
-Sample = 5
-Average = 0 
-def Calc_Average():
-	global Last_Few
-	if len(Last_Few) >= (Sample +1):
-		del Last_Few[0]
-	Sum = 0 
-	global Average	
-	for x in Last_Few:
-		Sum = Sum + x
-	Average = Sum / Sample
-
-Max_Delta = 0
-Max_Diff = 0
-
+def Rolling_Median()
+	'''return median average of recent readings as defined elsewhere''' 
+	return Median(Last_Few)
 
 ###############
 # functions arranged for repetative looping
+# does not conform to current function structure but retained as place holder
 
 def Major_Payload():
-
-		global Max_Delta
-		global Max_Diff
-	
-		Open_Device()
-
-		Flip_LED()
-
-		#Read and print value of accelerometer
-		Accel = Get_Reading() 
-		Last_Few.append(Accel)
 
 		Calc_Average()
 
@@ -166,8 +157,6 @@ def Major_Payload():
 		if Delta > Max_Delta:
 			Max_Delta = Delta
 		print "Max difference from average is %1.3f Volts" % Max_Delta
-
-		Close_Device()
 
 def Minor_Payload():
 	pass
