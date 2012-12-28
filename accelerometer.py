@@ -7,9 +7,10 @@
 
 import u3
 
-Device = "" 
+Device = ""   ### Nessasary for current implementation of SetDevice() 
  
 def SetDevice():
+	'''initialize a labjack object and provide a place to set up a dummy of no labjack is present'''
 	global Device
 	try:
 		Device = u3.U3()
@@ -18,8 +19,7 @@ def SetDevice():
 		print "No Labjack device found... "
 		from sys import exit
 		exit()
-#can this be done as Device = SetDevice() with set device returning wither a labjack object or a dummy ??
-
+	#can this be done as Device = SetDevice() with set device returning with either a labjack object or a dummy ??
 		
 def Open_Device():
 	Device.open()
@@ -42,12 +42,12 @@ def Write_LED():
 # support functions and variables
 
 def Poll_Device(function):
-	'''manage open and close of device for a la carte usage outside of Major_Payload below'''
+	'''manage open and close of device for a la carte usage outside of Major_Loop_Function below'''
 	#test if device has been set and if not call SetDevice() ???
-	#not working
+	#not working, nullhandleexception means not finding labjack?  scope deficient??
 	#map builtin useful here?
 	Open_Device()
-	function
+	print function
 	Close_Device()
 
 LED_State = 0
@@ -67,18 +67,13 @@ def Read(Sample=5):
 	#should Read() return the list and enroll data in the globals and write the raw values to a log file??
 	return Measurements
 
-###############
-# averaging and analysis functions and associated variables 
-
 Sample_Count = 0
 Running_Total = 0
 Last_Few = []                   # change to something like recent_readings ?/
 
-def enroll_data(Samples):
+def Enroll_Data(Samples):
 	'''accept list of raw data points and enrolls them into our data set'''
-	# USES same variable as Run_Average below so should not be run in combination at this point
 	#why should this not be combine with read ??
-	#we should have another global like Last_Few below which has a rolling window of a certain size
 	global Running_Total
 	global Sample_Count
 	Recent_Values(Samples)
@@ -88,18 +83,22 @@ def enroll_data(Samples):
 		#print Running_Total, Sample_Count, measurement
 	#is it useful to return the unmanipulated input so that we can pass data through this function or is thast confusing??
 
-Def Recent_Values(Add, Length=50, Container=Last_Few)
+def Recent_Values(Add, Length=50, Container=Last_Few):
 	'''manage sequence of last n values of a measurement.  append new values and drop oldest.  return updated sequence object'''
 	#does this have to be a list ??  should we test ??
-	global Container
+#	global Container ##### result must be saved for persistence
 	for value in Add:
 		#validate data in input?  must be list of floats???
 		Last_Few.append(value)
 	while len(Container) >= Length:
 		del Last_Few[0]
 	return Container
+
+
+###############
+# averaging and analysis functions and associated variables 
 	
-Def Mean(Samples):
+def Mean(Samples):
 	Samp=Samples[:]
 	Sum = 0.0
 	Size = len(Samp)
@@ -118,18 +117,22 @@ def Median(Samples):
         else:
 		return float( Samp[M] + Samp[M-1] ) /2
 
-def Cumulative_Running_Average(Samples=[]):
+def Cumulative_Running_Average():
 	'''return current cumulative running average. assumes Sample_Count is greater than 0'''
 	return Running_Total / Sample_Count
+CRA = Cumulative_Running_Average
 
 def Compute_Deviation(Samples):
 	'''look at a set of data and check if it falls inside or outside of deviation'''
+	#this needs to be generalized to work on any of the various averages we are working with: mean, median, rolling, cumulative etc
+	# input will be a value and a dta set to compare?
+	# return will be the difference of the input value to the data set ??
 
-def Rolling_mean()
+def Rolling_mean():
 	'''return mean average of recent readings as defined elsewhere''' 
 	return Mean(Last_Few)
 
-def Rolling_Median()
+def Rolling_Median():
 	'''return median average of recent readings as defined elsewhere''' 
 	return Median(Last_Few)
 
@@ -137,32 +140,22 @@ def Rolling_Median()
 # functions arranged for repetative looping
 # does not conform to current function structure but retained as place holder
 
-def Major_Payload():
+def Major_Loop_Function():
+	import time
+	'''work to be done periodically: get new data, check it in, evaluate and report avrerages'''
+	Open_Device()
+	data = Read()
+	Enroll_Data(data)
+	print "Raw Measurements at", time.time(), "are", data
+	print "Mean is", Mean(data), "      Median is", Median(data), "        Running Average is", CRA()
+	print "Mean of last 50 measuremnets is", Rolling_mean(), "      Median of last 50 measurments is", Rolling_Median() 
+	Close_Device()
 
-		Calc_Average()
-
-		Diff = Average - Accel
-		if Diff > Max_Diff:
-			Max_Diff = Diff	
-
-#		print "%s" % Last_Few
-#		print "Acceleromter output is %s Volts" % Accel
-#		print "running average is %1.3f Volts" % Average 
-#		print "Last sample differs from average by %1.3f Volts" % Diff
-		print "Max difference of sample from average is %1.3f Volts" %Max_Diff
-		
-		Delta = Last_Few[0] - Accel
-#		print "Difference from last sample is %1.3f Volts" % Delta
-
-		if Delta > Max_Delta:
-			Max_Delta = Delta
-		print "Max difference from average is %1.3f Volts" % Max_Delta
-
-def Minor_Payload():
+def Minor_Loop_Function():
 	pass
 
 def Call_Loop():
 	SetDevice()
 	import mmTimer
-	mmTimer.Major_Payload = Major_Payload
-	mmTimer.Loop("Major_Payload()", "Minor_Payload()",1,.5)
+	mmTimer.Major_Loop_Function = Major_Loop_Function
+	mmTimer.Loop("Major_Loop_Function()", "Minor_Loop_Function()",1,.5)
