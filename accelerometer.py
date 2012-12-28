@@ -147,8 +147,9 @@ def Major_Loop_Function():
 	data = Read()
 	Enroll_Data(data)
 	print "Raw Measurements at", time.time(), "are", data
-	print "Mean is", Mean(data), "      Median is", Median(data), "        Running Average is", CRA()
-	print "Mean of last 50 measuremnets is", Rolling_mean(), "      Median of last 50 measurments is", Rolling_Median() 
+	print "Mean is", Mean(data), " Median is", Median(data), "      Running Average is", CRA()
+	print "Mean of last 50 measuremnets is", Rolling_mean(), "      Median of last 50 measurments is", Rolling_Median()
+	print ""
 	Close_Device()
 
 def Minor_Loop_Function():
