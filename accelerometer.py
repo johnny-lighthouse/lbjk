@@ -41,15 +41,6 @@ def Write_LED():
 ###############
 # support functions and variables
 
-def Poll_Device(function):
-	'''manage open and close of device for a la carte usage outside of Major_Loop_Function below'''
-	#test if device has been set and if not call SetDevice() ???
-	#not working, nullhandleexception means not finding labjack?  scope deficient??
-	#map builtin useful here?
-	Open_Device()
-	print function
-	Close_Device()
-
 LED_State = 0
 
 def Flip_LED():
@@ -62,14 +53,13 @@ def Read(Sample=5):
         Measurements = []
         while len(Measurements) < Sample :
                 Measurements.append(Read_X())
-	#accept an optional parameter to turn on an if to print values?
-	#should we also somehow append the time? at beinging or end?
+	#should the time get recorded here? makes unpacking results more complicated...
 	#should Read() return the list and enroll data in the globals and write the raw values to a log file??
 	return Measurements
 
 Sample_Count = 0
 Running_Total = 0
-Last_Few = []                   # change to something like recent_readings ?/
+Last_Few = []
 
 def Enroll_Data(Samples):
 	'''accept list of raw data points and enrolls them into our data set'''
@@ -85,18 +75,17 @@ def Enroll_Data(Samples):
 
 def Recent_Values(Add, Length=50, Container=Last_Few):
 	'''manage sequence of last n values of a measurement.  append new values and drop oldest.  return updated sequence object'''
-	#does this have to be a list ??  should we test ??
-#	global Container ##### result must be saved for persistence
+	#does input have to be a list ??  should we test ??
 	for value in Add:
 		#validate data in input?  must be list of floats???
-		Last_Few.append(value)
+		Container.append(value)
 	while len(Container) >= Length:
-		del Last_Few[0]
+		del Container[0]
 	return Container
 
 
 ###############
-# averaging and analysis functions and associated variables 
+# averaging functions and associated variables 
 	
 def Mean(Samples):
 	Samp=Samples[:]
@@ -120,13 +109,6 @@ def Median(Samples):
 def Cumulative_Running_Average():
 	'''return current cumulative running average. assumes Sample_Count is greater than 0'''
 	return Running_Total / Sample_Count
-CRA = Cumulative_Running_Average
-
-def Compute_Deviation(Samples):
-	'''look at a set of data and check if it falls inside or outside of deviation'''
-	#this needs to be generalized to work on any of the various averages we are working with: mean, median, rolling, cumulative etc
-	# input will be a value and a dta set to compare?
-	# return will be the difference of the input value to the data set ??
 
 def Rolling_mean():
 	'''return mean average of recent readings as defined elsewhere''' 
@@ -137,8 +119,7 @@ def Rolling_Median():
 	return Median(Last_Few)
 
 ###############
-# functions arranged for repetative looping
-# does not conform to current function structure but retained as place holder
+# arrangment for repetative looping
 
 def Major_Loop_Function():
 	import time
@@ -147,7 +128,7 @@ def Major_Loop_Function():
 	data = Read()
 	Enroll_Data(data)
 	print "Raw Measurements at", time.time(), "are", data
-	print "Mean is", Mean(data), " Median is", Median(data), "      Running Average is", CRA()
+	print "Mean is", Mean(data), " Median is", Median(data), "      Running Average is", Cumulative_Running_Average()
 	print "Mean of last 50 measuremnets is", Rolling_mean(), "      Median of last 50 measurments is", Rolling_Median()
 	print ""
 	Close_Device()
