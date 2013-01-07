@@ -61,8 +61,9 @@ Sample_Count = 0
 Running_Total = 0
 Last_Few = []
 
-def Enroll_Data(Samples):
-	'''accept list of raw data points and enrolls them into our data set'''
+def Enroll_Data(Samples, Roll_Length=50):
+	'''accept list of raw data points and optional length of rolling data list
+	enrolls data points into various persistent storage'''
 	#why should this not be combine with read ??
 	global Running_Total
 	global Sample_Count
@@ -70,18 +71,10 @@ def Enroll_Data(Samples):
 	for measurement in Samples:
 		Sample_Count += 1
 		Running_Total = Running_Total + measurement
-		#print Running_Total, Sample_Count, measurement
-	#is it useful to return the unmanipulated input so that we can pass data through this function or is thast confusing??
-
-def Recent_Values(Add, Length=50, Container=Last_Few):
-	'''manage sequence of last n values of a measurement.  append new values and drop oldest.  return updated sequence object'''
-	#does input have to be a list ??  should we test ??
-	for value in Add:
-		#validate data in input?  must be list of floats???
-		Container.append(value)
-	while len(Container) >= Length:
-		del Container[0]
-	return Container
+		Last_Few.append(measurement)
+	while len(Last_Few) >= Roll_Length:
+		del Last_Few[0]
+	## Do we need to Global Last_Few ?
 
 
 ###############
